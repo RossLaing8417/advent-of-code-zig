@@ -4,7 +4,7 @@ Solving Advent of Code using Zig
 
 ## Executing
 
-Edited build.zig to allow accept year, day, and part args:
+Edited build.zig to accept year, day, and part args:
 
 ```
 zig build -Dyear=2023 -Dday=1 -Dpart=1
