@@ -26,25 +26,25 @@ pub fn build(b: *std.Build) void {
 
     const part: u2 = b.option(u2, "part", "Part") orelse {
         std.debug.print("Specify part 1 or 2\n", .{});
-        std.os.exit(2);
+        std.process.exit(2);
     };
 
     if (part < 1 or part > 2) {
         std.debug.print("Specify part 1 or 2\n", .{});
-        std.os.exit(2);
+        std.process.exit(2);
     }
 
     var src_buff = [_]u8{0} ** 32;
-    var src_name = std.fmt.bufPrint(&src_buff, "src/{d:0>4}/{d:0>2}/part{d}.zig", .{ year, day, part }) catch unreachable;
+    const src_name = std.fmt.bufPrint(&src_buff, "src/{d:0>4}/{d:0>2}/part{d}.zig", .{ year, day, part }) catch unreachable;
 
     var exe_buff = [_]u8{0} ** 32;
-    var exe_name = std.fmt.bufPrint(&exe_buff, "aoc_{d:0>4}_{d:0>2}_{d}", .{ year, day, part }) catch unreachable;
+    const exe_name = std.fmt.bufPrint(&exe_buff, "aoc_{d:0>4}_{d:0>2}_{d}", .{ year, day, part }) catch unreachable;
 
     const exe = b.addExecutable(.{
         .name = exe_name,
         // In this case the main source file is merely a path, however, in more
         // complicated build scripts, this could be a generated file.
-        .root_source_file = .{ .path = src_name },
+        .root_source_file = b.path(src_name),
         .target = target,
         .optimize = optimize,
     });
@@ -80,7 +80,7 @@ pub fn build(b: *std.Build) void {
     // Creates a step for unit testing. This only builds the test executable
     // but does not run it.
     const unit_tests = b.addTest(.{
-        .root_source_file = .{ .path = src_name },
+        .root_source_file = b.path(src_name),
         .target = target,
         .optimize = optimize,
     });
